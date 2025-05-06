@@ -26,7 +26,134 @@ RED='\033[0;31m'
 YELLOW='\033[0;33m'
 NC='\033[0m' # No Color
 
-echo "" >> README.md
+echo -e "${BLUE}=== CVT-Intern Program: GitHub Organization Setup ===${NC}"
+echo "This script will set up the GitHub organization and repositories."
+
+# Check if GitHub CLI is installed
+if ! command -v gh &> /dev/null; then
+    echo -e "${RED}GitHub CLI (gh) is not installed or not in PATH.${NC}"
+    echo "Please install it from: https://cli.github.com/"
+    exit 1
+fi
+
+# Check if authenticated
+if ! gh auth status &> /dev/null; then
+    echo -e "${RED}You are not authenticated with GitHub CLI.${NC}"
+    echo "Please run: gh auth login"
+    exit 1
+fi
+
+# Create organization if it doesn't exist
+echo -e "\n${YELLOW}Checking if organization exists...${NC}"
+if ! gh api orgs/$ORG_NAME &> /dev/null; then
+    echo -e "${YELLOW}Creating organization: $ORG_NAME${NC}"
+    # Note: GitHub CLI doesn't directly support org creation, this would need to be done manually
+    echo -e "${RED}Please create the organization manually at https://github.com/organizations/new${NC}"
+    echo "Then press Enter to continue..."
+    read
+else
+    echo -e "${GREEN}Organization $ORG_NAME already exists.${NC}"
+fi
+
+# Create project board templates
+echo -e "\n${YELLOW}Creating organization-wide project templates...${NC}"
+
+# Create repositories for each project
+for i in "${!PROJECTS[@]}"; do
+    PROJECT=${PROJECTS[$i]}
+    DESCRIPTION=${PROJECT_DESCRIPTIONS[$i]}
+    
+    echo -e "\n${YELLOW}Setting up repository: $PROJECT${NC}"
+    
+    # Check if repo exists
+    if gh repo view $ORG_NAME/$PROJECT &> /dev/null; then
+        echo -e "${GREEN}Repository $ORG_NAME/$PROJECT already exists.${NC}"
+    else
+        echo "Creating repository: $PROJECT"
+        gh repo create $ORG_NAME/$PROJECT --public --description "$DESCRIPTION"
+        
+        if [ $? -ne 0 ]; then
+            echo -e "${RED}Failed to create repository $PROJECT. Skipping.${NC}"
+            continue
+        fi
+    fi
+    
+    # Clone the repository
+    echo "Cloning repository: $PROJECT"
+    if [ -d "$PROJECT" ]; then
+        echo -e "${YELLOW}Directory $PROJECT already exists. Pulling latest changes.${NC}"
+        cd $PROJECT
+        git pull
+        cd ..
+    else
+        gh repo clone $ORG_NAME/$PROJECT
+        if [ $? -ne 0 ]; then
+            echo -e "${RED}Failed to clone repository $PROJECT. Skipping.${NC}"
+            continue
+        fi
+    fi
+    
+    # Create directory structure
+    cd $PROJECT
+    echo "Creating directory structure for $PROJECT..."
+    
+    mkdir -p setup resources/{sample_configs,cheat_sheets,case_studies,architecture} weekly_tasks
+    
+    # Create initial weeks structure
+    for week in {1..24}; do
+        mkdir -p weekly_tasks/week-$week
+        
+        # Create README for each week
+        echo "# Week $week Overview" > weekly_tasks/week-$week/README.md
+        echo "" >> weekly_tasks/week-$week/README.md
+        echo "## Learning Objectives" >> weekly_tasks/week-$week/README.md
+        echo "" >> weekly_tasks/week-$week/README.md
+        echo "## Daily Tasks" >> weekly_tasks/week-$week/README.md
+        
+        # Create files for each day in the week
+        for day in {1..5}; do
+            echo "# Week $week Day $day: [Title]" > weekly_tasks/week-$week/day-$day.md
+            echo "" >> weekly_tasks/week-$week/day-$day.md
+            echo "## Overview" >> weekly_tasks/week-$week/day-$day.md
+            echo "- **Duration**: Full day (8 hours)" >> weekly_tasks/week-$week/day-$day.md
+            echo "- **Why This Matters**: [Explanation]" >> weekly_tasks/week-$week/day-$day.md
+            echo "- **Connection to Project**: [Explanation]" >> weekly_tasks/week-$week/day-$day.md
+            echo "" >> weekly_tasks/week-$week/day-$day.md
+            echo "## Morning Session (4 hours)" >> weekly_tasks/week-$week/day-$day.md
+            echo "" >> weekly_tasks/week-$week/day-$day.md
+            echo "## Afternoon Session (4 hours)" >> weekly_tasks/week-$week/day-$day.md
+        done
+    done
+    
+    # Create setup scripts
+    echo "#!/bin/bash" > setup/setup.sh
+    echo "# Setup script for $PROJECT" >> setup/setup.sh
+    echo "echo \"Setting up development environment for $PROJECT...\"" >> setup/setup.sh
+    chmod +x setup/setup.sh
+    
+    # Create PowerShell setup script for Windows users
+    echo "# Setup script for $PROJECT" > setup/setup.ps1
+    echo "Write-Host \"Setting up development environment for $PROJECT...\"" >> setup/setup.ps1
+    
+    # Create validation script
+    echo "#!/bin/bash" > setup/validate.sh
+    echo "# Validation script for $PROJECT" >> setup/validate.sh
+    echo "echo \"Validating development environment for $PROJECT...\"" >> setup/validate.sh
+    chmod +x setup/validate.sh
+    
+    # Create README
+    echo "# $PROJECT" > README.md
+    echo "" >> README.md
+    echo "$DESCRIPTION" >> README.md
+    echo "" >> README.md
+    echo "## Project Overview" >> README.md
+    echo "" >> README.md
+    echo "## Getting Started" >> README.md
+    echo "" >> README.md
+    echo "### Prerequisites" >> README.md
+    echo "" >> README.md
+    echo "### Setup" >> README.md
+    echo "" >> README.md
     
     # Create CONTRIBUTING.md
     echo "# Contributing to $PROJECT" > CONTRIBUTING.md
@@ -208,131 +335,4 @@ echo -e "\n${YELLOW}Next steps:${NC}"
 echo "1. Populate Week 1 content for each project"
 echo "2. Configure GitHub Project boards for each repository"
 echo "3. Set up branch protection rules"
-echo "4. Invite interns and assign them to projects" -e "${BLUE}=== CVT-Intern Program: GitHub Organization Setup ===${NC}"
-echo "This script will set up the GitHub organization and repositories."
-
-# Check if GitHub CLI is installed
-if ! command -v gh &> /dev/null; then
-    echo -e "${RED}GitHub CLI (gh) is not installed or not in PATH.${NC}"
-    echo "Please install it from: https://cli.github.com/"
-    exit 1
-fi
-
-# Check if authenticated
-if ! gh auth status &> /dev/null; then
-    echo -e "${RED}You are not authenticated with GitHub CLI.${NC}"
-    echo "Please run: gh auth login"
-    exit 1
-fi
-
-# Create organization if it doesn't exist
-echo -e "\n${YELLOW}Checking if organization exists...${NC}"
-if ! gh api orgs/$ORG_NAME &> /dev/null; then
-    echo -e "${YELLOW}Creating organization: $ORG_NAME${NC}"
-    # Note: GitHub CLI doesn't directly support org creation, this would need to be done manually
-    echo -e "${RED}Please create the organization manually at https://github.com/organizations/new${NC}"
-    echo "Then press Enter to continue..."
-    read
-else
-    echo -e "${GREEN}Organization $ORG_NAME already exists.${NC}"
-fi
-
-# Create project board templates
-echo -e "\n${YELLOW}Creating organization-wide project templates...${NC}"
-
-# Create repositories for each project
-for i in "${!PROJECTS[@]}"; do
-    PROJECT=${PROJECTS[$i]}
-    DESCRIPTION=${PROJECT_DESCRIPTIONS[$i]}
-    
-    echo -e "\n${YELLOW}Setting up repository: $PROJECT${NC}"
-    
-    # Check if repo exists
-    if gh repo view $ORG_NAME/$PROJECT &> /dev/null; then
-        echo -e "${GREEN}Repository $ORG_NAME/$PROJECT already exists.${NC}"
-    else
-        echo "Creating repository: $PROJECT"
-        gh repo create $ORG_NAME/$PROJECT --public --description "$DESCRIPTION"
-        
-        if [ $? -ne 0 ]; then
-            echo -e "${RED}Failed to create repository $PROJECT. Skipping.${NC}"
-            continue
-        fi
-    fi
-    
-    # Clone the repository
-    echo "Cloning repository: $PROJECT"
-    if [ -d "$PROJECT" ]; then
-        echo -e "${YELLOW}Directory $PROJECT already exists. Pulling latest changes.${NC}"
-        cd $PROJECT
-        git pull
-        cd ..
-    else
-        gh repo clone $ORG_NAME/$PROJECT
-        if [ $? -ne 0 ]; then
-            echo -e "${RED}Failed to clone repository $PROJECT. Skipping.${NC}"
-            continue
-        fi
-    fi
-    
-    # Create directory structure
-    cd $PROJECT
-    echo "Creating directory structure for $PROJECT..."
-    
-    mkdir -p setup resources/{sample_configs,cheat_sheets,case_studies,architecture} weekly_tasks
-    
-    # Create initial weeks structure
-    for week in {1..24}; do
-        mkdir -p weekly_tasks/week-$week
-        
-        # Create README for each week
-        echo "# Week $week Overview" > weekly_tasks/week-$week/README.md
-        echo "" >> weekly_tasks/week-$week/README.md
-        echo "## Learning Objectives" >> weekly_tasks/week-$week/README.md
-        echo "" >> weekly_tasks/week-$week/README.md
-        echo "## Daily Tasks" >> weekly_tasks/week-$week/README.md
-        
-        # Create files for each day in the week
-        for day in {1..5}; do
-            echo "# Week $week Day $day: [Title]" > weekly_tasks/week-$week/day-$day.md
-            echo "" >> weekly_tasks/week-$week/day-$day.md
-            echo "## Overview" >> weekly_tasks/week-$week/day-$day.md
-            echo "- **Duration**: Full day (8 hours)" >> weekly_tasks/week-$week/day-$day.md
-            echo "- **Why This Matters**: [Explanation]" >> weekly_tasks/week-$week/day-$day.md
-            echo "- **Connection to Project**: [Explanation]" >> weekly_tasks/week-$week/day-$day.md
-            echo "" >> weekly_tasks/week-$week/day-$day.md
-            echo "## Morning Session (4 hours)" >> weekly_tasks/week-$week/day-$day.md
-            echo "" >> weekly_tasks/week-$week/day-$day.md
-            echo "## Afternoon Session (4 hours)" >> weekly_tasks/week-$week/day-$day.md
-        done
-    done
-    
-    # Create setup scripts
-    echo "#!/bin/bash" > setup/setup.sh
-    echo "# Setup script for $PROJECT" >> setup/setup.sh
-    echo "echo \"Setting up development environment for $PROJECT...\"" >> setup/setup.sh
-    chmod +x setup/setup.sh
-    
-    # Create PowerShell setup script for Windows users
-    echo "# Setup script for $PROJECT" > setup/setup.ps1
-    echo "Write-Host \"Setting up development environment for $PROJECT...\"" >> setup/setup.ps1
-    
-    # Create validation script
-    echo "#!/bin/bash" > setup/validate.sh
-    echo "# Validation script for $PROJECT" >> setup/validate.sh
-    echo "echo \"Validating development environment for $PROJECT...\"" >> setup/validate.sh
-    chmod +x setup/validate.sh
-    
-    # Create README
-    echo "# $PROJECT" > README.md
-    echo "" >> README.md
-    echo "$DESCRIPTION" >> README.md
-    echo "" >> README.md
-    echo "## Project Overview" >> README.md
-    echo "" >> README.md
-    echo "## Getting Started" >> README.md
-    echo "" >> README.md
-    echo "### Prerequisites" >> README.md
-    echo "" >> README.md
-    echo "### Setup" >> README.md
-    echo
+echo "4. Invite interns and assign them to projects"
