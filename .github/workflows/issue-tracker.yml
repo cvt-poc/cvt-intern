@@ -1,0 +1,19 @@
+name: Issue Tracker
+
+on:
+  issues:
+    types: [opened, closed, reopened, assigned, unassigned]
+  pull_request:
+    types: [opened, closed, reopened]
+
+jobs:
+  update-project-board:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Project Board
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            console.log('Issue or PR activity detected, would update project board');
+            // Project automation will be configured via GitHub's UI

@@ -1,0 +1,17 @@
+name: Activity Tracker
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight
+
+jobs:
+  track-activity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Recent Activity
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            console.log('Checking for recent intern activity');
+            // This would track activity and notify mentors of inactivity
