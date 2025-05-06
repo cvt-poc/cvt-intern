@@ -4,7 +4,7 @@
 # Prerequisites: GitHub CLI (gh) installed and authenticated
 
 # Configuration
-ORG_NAME="cvt-intern"
+ORG_NAME="cvt-poc"
 PROJECTS=("drift-detect" "k8s-autoscaler-advisor" "secrets-lifecycle" "helm-score" "chaos-injector" "cost-tagger" "infra-graph" "alert-consolidator" "canary-configurator" "release-notes-compiler")
 PROJECT_DESCRIPTIONS=(
   "A GitHub Action that compares live cluster state against Helm templates, preventing configuration drift"
