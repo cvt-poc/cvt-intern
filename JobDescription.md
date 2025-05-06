@@ -11,7 +11,13 @@ Throughout this 6-month journey, you'll work on one of our high-impact projects:
 - **Drift-Detect**: Develop a GitHub Action that compares live Kubernetes cluster state against Helm templates to prevent configuration drift
 - **K8s-AutoScaler Advisor**: Build a CLI tool that analyzes autoscaling configurations and recommends optimal targets
 - **Secrets-Lifecycle**: Create automation for rotating Kubernetes secrets via AWS integration
-- **And more exciting projects!**
+- **Helm-Score**: Build a REST service wrapping helm lint and kubeval, scoring charts on security and best practices
+- **Chaos-Injector**: Create a wrapper around Chaos Engineering tools offering a unified CLI to trigger various experiments
+- **Cost-Tagger**: Develop a Terraform pre-commit hook that enforces and auto-inserts cost allocation tags
+- **Infra-Graph**: Build a dashboard that visualizes service-to-service call graphs in Kubernetes using eBPF
+- **Alert-Consolidator**: Create a Prometheus sidecar that de-duplicates alerts with identical labels
+- **Canary-Configurator**: Develop a CLI that converts a Helm chart into a Canary rollout YAML with sensible defaults
+- **Release-Notes-Compiler**: Build a GitHub Action that aggregates merged PR titles and authors into formatted release notes
 
 ## 💼 What You'll Experience
 
@@ -20,6 +26,8 @@ Throughout this 6-month journey, you'll work on one of our high-impact projects:
 - **Professional Mentorship**: Receive guidance from experienced DevOps engineers who will review your code and provide feedback
 - **GitHub-Based Workflow**: Build your portfolio while learning industry-standard collaboration practices
 - **Skill Development**: Master technologies like Kubernetes, GitHub Actions, Terraform, AWS, and more
+- **AI Integration**: Learn to leverage AI and LLMs to accelerate development, enhance workflows, and solve complex problems
+- **Prompt Engineering**: Develop skills in crafting effective prompts for AI tools to assist in coding, testing, and documentation
 
 ## 🔍 What Sets This Internship Apart
 
@@ -28,6 +36,9 @@ Throughout this 6-month journey, you'll work on one of our high-impact projects:
 - Receiving detailed feedback on your code and implementation approach
 - Creating comprehensive documentation of your learning journey
 - Adding substantial GitHub contributions to your professional portfolio
+- Leveraging AI and LLMs to accelerate development and enhance solutions
+- Learning to craft effective prompts for coding, testing, and documentation tasks
+- Gaining practical experience with AI-assisted DevOps workflows - a cutting-edge industry skill
 
 ## 🎯 What You'll Achieve
 
@@ -37,7 +48,7 @@ By the end of the program, you'll have:
 2. **Mastered Core Technologies**: Gain practical experience with Kubernetes, Git, CI/CD, cloud platforms, and more
 3. **Strengthened Your Portfolio**: Showcase your project on GitHub with a history of meaningful contributions
 4. **Earned Recognition**: Receive a work experience letter documenting your achievements
-5. **Prepared for Certification**: Qualify for certification exam fee reimbursement (AWS,AZURE,CKA*)
+5. **Prepared for Certification**: Qualify for certification exam fee reimbursement
 6. **Performance Bonuses**: Earn ₹10,000 for each additional project completed beyond your primary assignment
 
 ## ✅ Requirements
@@ -46,7 +57,7 @@ By the end of the program, you'll have:
 - Basic understanding of Linux systems and command-line operations
 - Familiarity with at least one programming language (Python preferred)
 - Strong problem-solving abilities and eagerness to learn
-- Ability to commit 20-40 hours weekly for the 6-month program
+- Ability to commit 40 hours weekly for the 6-month program
 - Self-motivated with excellent time management skills
 
 ## 📝 Application Process
